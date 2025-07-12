@@ -461,6 +461,25 @@ body {
     font-size: 0.9rem;
 }
 
+/* Sub Module Generation*/
+.submodule-container {
+    padding-left: 2rem;
+}
+
+.submodule a {
+    display: block;
+    padding: 0.5rem 1.5rem;
+    color: var(--medium-gray);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.submodule a:hover {
+    background-color: var(--light-yellow);
+    color: var(--dark-gray);
+}
+
 /* Responsive Styles */
 @media (max-width: 1024px) {
     .stats-row {

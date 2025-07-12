@@ -21,43 +21,43 @@ function animateCounters() {
 }
 
 // Calendar Generation
-function generateCalendar() {
-    const calendarDays = document.getElementById('calendar-days');
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+// function generateCalendar() {
+//     const calendarDays = document.getElementById('calendar-days');
+//     const now = new Date();
+//     const currentMonth = now.getMonth();
+//     const currentYear = now.getFullYear();
+//     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+//     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     
-    // Clear previous days
-    calendarDays.innerHTML = '';
+//     // Clear previous days
+//     calendarDays.innerHTML = '';
     
-    // Add empty cells for days before the first day of the month
-    for (let i = 0; i < firstDay; i++) {
-        const emptyDay = document.createElement('div');
-        emptyDay.className = 'calendar-day';
-        calendarDays.appendChild(emptyDay);
-    }
+//     // Add empty cells for days before the first day of the month
+//     for (let i = 0; i < firstDay; i++) {
+//         const emptyDay = document.createElement('div');
+//         emptyDay.className = 'calendar-day';
+//         calendarDays.appendChild(emptyDay);
+//     }
     
-    // Add days of the month
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'calendar-day';
-        dayElement.textContent = day;
+//     // Add days of the month
+//     for (let day = 1; day <= daysInMonth; day++) {
+//         const dayElement = document.createElement('div');
+//         dayElement.className = 'calendar-day';
+//         dayElement.textContent = day;
         
-        // Mark today
-        if (day === now.getDate() && currentMonth === now.getMonth() && currentYear === now.getFullYear()) {
-            dayElement.classList.add('today');
-        }
+//         // Mark today
+//         if (day === now.getDate() && currentMonth === now.getMonth() && currentYear === now.getFullYear()) {
+//             dayElement.classList.add('today');
+//         }
         
-        // Randomly add some events (for demo)
-        if (Math.random() > 0.7) {
-            dayElement.classList.add('event');
-        }
+//         // Randomly add some events (for demo)
+//         if (Math.random() > 0.7) {
+//             dayElement.classList.add('event');
+//         }
         
-        calendarDays.appendChild(dayElement);
-    }
-}
+//         calendarDays.appendChild(dayElement);
+//     }
+// }
 
 // Chart Initialization
 function initCharts() {
@@ -115,7 +115,7 @@ function setupSidebarToggle() {
             // Desktop - toggle collapsed state
             sidebar.classList.toggle(sidebarCollapsedClass);
         } else {
-            // Mobile - toggle visibility
+            // Mobile - toggle visibility state
             sidebar.classList.toggle(sidebarVisibleClass);
             
             // Add/remove overlay
@@ -143,8 +143,6 @@ function setupSidebarToggle() {
         }
     }
     
-    toggleBtn.addEventListener('click', toggleSidebar);
-    
     // Close sidebar when clicking outside on mobile
     document.addEventListener('click', (e) => {
         if (window.innerWidth < 1024 && 
@@ -155,9 +153,253 @@ function setupSidebarToggle() {
         }
     });
     
+    //Call toggleSidebar() function on click
+    toggleBtn.addEventListener('click', toggleSidebar);
     // Handle window resize
     window.addEventListener('resize', initSidebar);
     initSidebar();
+}
+
+function moduleActiveToggleAndLoad() {
+    const modules = document.querySelectorAll('.module');
+    const mainContent = document.querySelector('.main-content');
+
+    if (!mainContent || modules.length === 0) return;
+
+    modules.forEach(module => {
+        const page = module.getAttribute('data-page');
+
+        module.addEventListener('click', (e) => {
+            // Skip AJAX for Dashboard (which has no data-page)
+            if (!page) return;
+
+            e.preventDefault();
+
+            // Update active styling
+            modules.forEach(m => m.classList.remove('active'));
+            module.classList.add('active');
+
+            // Load module content
+            fetch(`submodule/${page}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to load module.');
+                    return res.text();
+                })
+                .then(html => {
+                    mainContent.innerHTML = html;
+                })
+                .catch(err => {
+                    mainContent.innerHTML = `<p style="color:red;">${err.message}</p>`;
+                });
+        });
+    });
+
+    modules[0].classList.add('active');
+}
+
+function setupSubmoduleToggle() {
+    const moduleItems = document.querySelectorAll('.module');
+
+    moduleItems.forEach(module => {
+        const label = module.textContent.trim();
+
+        if (label === 'Succession Planning') {
+            // Create submodule container if it doesn't exist
+            if (!module.querySelector('.submodule-container')) {
+                const arrow = document.createElement('i');
+                arrow.classList.add('fas', 'fa-chevron-down');
+                arrow.style.marginLeft = 'auto';
+
+                const submoduleList = document.createElement('ul');
+                submoduleList.className = 'submodule-container';
+                submoduleList.style.display = 'none';
+
+                const submodules = [
+                    'Course Management',
+                    'User Enrollment and Assignment',
+                    'Certification and Licensing Tracker',
+                    'Training Calendar and Scheduling',
+                    'Assessment and Quiz Module',
+                    'Progress and Performance Monitoring'
+                ];
+
+                submodules.forEach(name => {
+                    const li = document.createElement('li');
+                    li.className = 'submodule';
+                    li.innerHTML = `<a href="#">${name}</a>`;
+                    submoduleList.appendChild(li);
+                });
+
+                const a = module.querySelector('a');
+                a.appendChild(arrow);
+                module.appendChild(submoduleList);
+
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const visible = submoduleList.style.display === 'block';
+                    submoduleList.style.display = visible ? 'none' : 'block';
+                    arrow.className = visible ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+                });
+            }
+        }
+        else if (label === 'Learning Management') {
+            // Create submodule container if it doesn't exist
+            if (!module.querySelector('.submodule-container')) {
+                const arrow = document.createElement('i');
+                arrow.classList.add('fas', 'fa-chevron-down');
+                arrow.style.marginLeft = 'auto';
+
+                const submoduleList = document.createElement('ul');
+                submoduleList.className = 'submodule-container';
+                submoduleList.style.display = 'none';
+
+                const submodules = [
+                    'Course Management',
+                    'User Enrollment and Assignment',
+                    'Certification and Licensing Tracker',
+                    'Training Calendar and Scheduling',
+                    'Assessment and Quiz Module',
+                    'Progress and Performance Monitoring'
+                ];
+
+                submodules.forEach(name => {
+                    const li = document.createElement('li');
+                    li.className = 'submodule';
+                    li.innerHTML = `<a href="#">${name}</a>`;
+                    submoduleList.appendChild(li);
+                });
+
+                const a = module.querySelector('a');
+                a.appendChild(arrow);
+                module.appendChild(submoduleList);
+
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const visible = submoduleList.style.display === 'block';
+                    submoduleList.style.display = visible ? 'none' : 'block';
+                    arrow.className = visible ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+                });
+            }
+        }
+        else if (label === 'Training Management'){
+            // Create submodule container if it doesn't exist
+            if (!module.querySelector('.submodule-container')) {
+                const arrow = document.createElement('i');
+                arrow.classList.add('fas', 'fa-chevron-down');
+                arrow.style.marginLeft = 'auto';
+
+                const submoduleList = document.createElement('ul');
+                submoduleList.className = 'submodule-container';
+                submoduleList.style.display = 'none';
+
+                const submodules = [
+                    'Course Management',
+                    'User Enrollment and Assignment',
+                    'Certification and Licensing Tracker',
+                    'Training Calendar and Scheduling',
+                    'Assessment and Quiz Module',
+                    'Progress and Performance Monitoring'
+                ];
+
+                submodules.forEach(name => {
+                    const li = document.createElement('li');
+                    li.className = 'submodule';
+                    li.innerHTML = `<a href="#">${name}</a>`;
+                    submoduleList.appendChild(li);
+                });
+
+                const a = module.querySelector('a');
+                a.appendChild(arrow);
+                module.appendChild(submoduleList);
+
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const visible = submoduleList.style.display === 'block';
+                    submoduleList.style.display = visible ? 'none' : 'block';
+                    arrow.className = visible ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+                });
+            }
+        }
+        else if (label === 'Competency Management'){
+            // Create submodule container if it doesn't exist
+            if (!module.querySelector('.submodule-container')) {
+                const arrow = document.createElement('i');
+                arrow.classList.add('fas', 'fa-chevron-down');
+                arrow.style.marginLeft = 'auto';
+
+                const submoduleList = document.createElement('ul');
+                submoduleList.className = 'submodule-container';
+                submoduleList.style.display = 'none';
+
+                const submodules = [
+                    'Course Management',
+                    'User Enrollment and Assignment',
+                    'Certification and Licensing Tracker',
+                    'Training Calendar and Scheduling',
+                    'Assessment and Quiz Module',
+                    'Progress and Performance Monitoring'
+                ];
+
+                submodules.forEach(name => {
+                    const li = document.createElement('li');
+                    li.className = 'submodule';
+                    li.innerHTML = `<a href="#">${name}</a>`;
+                    submoduleList.appendChild(li);
+                });
+
+                const a = module.querySelector('a');
+                a.appendChild(arrow);
+                module.appendChild(submoduleList);
+
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const visible = submoduleList.style.display === 'block';
+                    submoduleList.style.display = visible ? 'none' : 'block';
+                    arrow.className = visible ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+                });
+            }
+        }
+        else if (label === 'Claims & Reimbursement'){
+            // Create submodule container if it doesn't exist
+            if (!module.querySelector('.submodule-container')) {
+                const arrow = document.createElement('i');
+                arrow.classList.add('fas', 'fa-chevron-down');
+                arrow.style.marginLeft = 'auto';
+
+                const submoduleList = document.createElement('ul');
+                submoduleList.className = 'submodule-container';
+                submoduleList.style.display = 'none';
+
+                const submodules = [
+                    'Course Management',
+                    'User Enrollment and Assignment',
+                    'Certification and Licensing Tracker',
+                    'Training Calendar and Scheduling',
+                    'Assessment and Quiz Module',
+                    'Progress and Performance Monitoring'
+                ];
+
+                submodules.forEach(name => {
+                    const li = document.createElement('li');
+                    li.className = 'submodule';
+                    li.innerHTML = `<a href="#">${name}</a>`;
+                    submoduleList.appendChild(li);
+                });
+
+                const a = module.querySelector('a');
+                a.appendChild(arrow);
+                module.appendChild(submoduleList);
+
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const visible = submoduleList.style.display === 'block';
+                    submoduleList.style.display = visible ? 'none' : 'block';
+                    arrow.className = visible ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+                });
+            }
+        }
+    });
+    
 }
 
 // Notification System
@@ -276,18 +518,18 @@ function setupNotificationSystem() {
 }
 
 // Calendar Event Handling
-function setupCalendarEvents() {
-    const calendarDays = document.getElementById('calendar-days');
+// function setupCalendarEvents() {
+//     const calendarDays = document.getElementById('calendar-days');
     
-    calendarDays.addEventListener('click', function(e) {
-        if (e.target.classList.contains('calendar-day') && e.target.textContent) {
-            const day = e.target.textContent;
-            const now = new Date();
-            const month = now.toLocaleString('default', { month: 'long' });
-            alert(`You clicked on ${month} ${day}. This would show details for any scheduled events.`);
-        }
-    });
-}
+//     calendarDays.addEventListener('click', function(e) {
+//         if (e.target.classList.contains('calendar-day') && e.target.textContent) {
+//             const day = e.target.textContent;
+//             const now = new Date();
+//             const month = now.toLocaleString('default', { month: 'long' });
+//             alert(`You clicked on ${month} ${day}. This would show details for any scheduled events.`);
+//         }
+//     });
+// }
 
 // System Status Check
 function checkSystemStatus() {
@@ -321,14 +563,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up UI interactions
     setupSidebarToggle();
     setupNotificationSystem();
-    setupCalendarEvents();
+    // setupCalendarEvents();
     
     // Initialize components
     animateCounters();
-    generateCalendar();
+    // generateCalendar();
     initCharts();
     updateClock();
     checkSystemStatus();
+
+    moduleActiveToggleAndLoad();
+    setupSubmoduleToggle();
     
     // Reset document title when tab becomes visible
     document.addEventListener('visibilitychange', function() {

@@ -43,12 +43,12 @@
 
         <nav class="sidebar">
             <ul>
-                <li class="active"><a href="#"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li><a href="#"><i class="fas fa-people-arrows"></i> <span>Succession Planning</span></a></li>
-                <li><a href="#"><i class="fas fa-graduation-cap"></i> <span>Training Management</span></a></li>
-                <li><a href="#"><i class="fas fa-star"></i> <span>Competency Management</span></a></li>
-                <li><a href="#"><i class="fas fa-book-open"></i> <span>Learning Management</span></a></li>
-                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> <span>Claims & Reimbursement</span></a></li>
+                <li class="module"><a href="index.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li class="module" data-page="sp.php"><a href="#"><i class="fas fa-people-arrows"></i> <span>Succession Planning</span></a></li>
+                <li class="module" data-page="tm.php"><a href="#"><i class="fas fa-graduation-cap"></i> <span>Training Management</span></a></li>
+                <li class="module" data-page="compe.php"><a href="#"><i class="fas fa-star"></i> <span>Competency Management</span></a></li>
+                <li class="module" data-page="learning.php"><a href="#"><i class="fas fa-book-open"></i> <span>Learning Management</span></a></li>
+                <li class="module" data-page="claimsreim.php"><a href="#"><i class="fas fa-file-invoice-dollar"></i> <span>Claims & Reimbursement</span></a></li>
             </ul>
         </nav>
 
